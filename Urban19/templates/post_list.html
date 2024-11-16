@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+<body>
+
+{% block content %}
+    <h1 align="center">Not fake news (maybe)</h1>
+
+    <form>
+        <p align="right">Число новостей на странице - {{ posts_per_page }}. Изменить: <select name="posts_per_page">
+            <option value=5>5</option>
+            <option value=10>10</option>
+            <option value=20>20</option>
+            <option value=50>50</option>
+        </select> <input type="submit" value="Обновить"></p>
+    </form>
+
+
+    <ul>
+        {% for post in page_posts %}
+            <li>
+                <h2 style="color:#2022c2">{{ post.title }}</h2>
+                <p style="color:#838080">({{ post.created_at }})</p>
+                <p>{{ post.text }}</p>
+            </li>
+        {% empty %}
+            <p>Нет постов.</p>
+        {% endfor %}
+    </ul>
+
+    <!-- показываем пагинатор -->
+    <div class="pagination_section">
+        <p align="center">
+            {% if page_posts.has_previous %}
+                <a href="?page=1&posts_per_page="><<</a>
+                <a href="?page={{ page_posts.previous_page_number }}&posts_per_page={{ posts_per_page }}">Prev.</a>
+            {% endif %}
+
+            {{ page_posts.number }}/{{ paginator.num_pages }}
+
+            {% if page_posts.has_next %}
+                <a href="?page={{ page_posts.next_page_number }}&posts_per_page={{ posts_per_page }}">Next</a>
+                <a href="?page={{ paginator.num_pages }}&posts_per_page={{ posts_per_page }}">>></a>
+            {% endif %}
+        </p>
+    </div>
+{% endblock %}
